@@ -1,0 +1,70 @@
+name: Publish content to GitHub pages
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+concurrency: publish
+
+jobs:
+  build-documentation:
+    runs-on: ubuntu-latest
+    permissions:
+      pages: write
+      contents: write
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+        with:
+          submodules: true
+      - name: Set up Quarto
+        uses: quarto-dev/quarto-actions/setup@v2
+        with:
+          tinytex: true
+      - name: Install Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
+          cache: 'pip'
+      - name: Install dependencies
+        run: pip install jupyter && pip install -r requirements.txt
+      - name: Render documentation pages
+        run: quarto render --output-dir _build
+      - name: Setup GitHub pages
+        uses: actions/configure-pages@v5
+      - name: Upload build artifacts
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: "_build"
+      - name: Upload build folder
+        uses: actions/upload-artifact@v4
+        with:
+          name: build-folder
+          path: "_build"
+
+  documentation-quality-checks:
+    runs-on: ubuntu-latest
+    needs: build-documentation
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+      - name: Check broken links
+        uses: gaurav-nelson/github-action-markdown-link-check@v1
+        with:
+          use-quiet-mode: 'yes'
+          config-file: 'markdown-link-checker-config.json'
+
+  deploy-documentation-ghpages:
+    runs-on: ubuntu-latest
+    needs: documentation-quality-checks
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy to GitHub pages
+        id: deployment
+        uses: actions/deploy-pages@v4

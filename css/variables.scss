@@ -1,0 +1,23 @@
+/*-- scss:defaults --*/
+
+:root {
+  // colors
+  --darkblue: #003247;
+  --lightblue: #00619E;
+  --green: #008E7A;
+  --lightgreen: #00AE9D;
+  --yellow: #FBAB18;
+  --orange: #F47920;
+  --body-background: white;
+
+  --font-family: 'NotesESA', Arial, sans-serif;
+}
+
+$grid-breakpoints: (
+        xs: 0,
+        sm: 576px,
+        md: 768px,
+        lg: 992px,
+        xl: 1200px,
+        xxl: 1500px
+) !default;

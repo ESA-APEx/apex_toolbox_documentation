@@ -1,0 +1,35 @@
+project:
+  type: website
+  preview:
+    port: 4200
+
+website:
+  favicon: assets/img/logos/favicon.svg
+  search:
+    location: sidebar
+    type: textbox
+    copy-button: true
+
+  navbar:
+    pinned: true
+  page-navigation: true
+  bread-crumbs: true
+
+  title: "APEx - Documentation Portal"
+
+  sidebar:
+    style: "floating"
+    collapse-level: 2
+    contents:
+      - href: docs/index.qmd
+        text: Welcome
+
+format:
+  html:
+    page-layout: full
+    theme: [cosmo, css/custom.scss]
+    scss: true
+    highlight-style: solarized
+    include-in-header:
+      - html/esa-header.html
+    link-external-newwindow: false

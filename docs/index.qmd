@@ -1,0 +1,36 @@
+---
+title: "Welcome to the Documentation Portal"
+---
+
+This is a **dummy welcome page** created with [Quarto](https://quarto.org/), an open-source scientific and technical publishing system.
+
+## What is Quarto?
+
+Quarto enables you to create dynamic documents, presentations, websites, and more using Markdown, code, and computational output.
+
+## Basic Features
+
+- **Markdown Support:**\
+Write content using simple and readable Markdown syntax.
+- **Code Execution:**\
+Embed code chunks in R, Python, Julia, and more.
+- **Interactive Visualizations:**\
+Integrate interactive plots and widgets.
+- **Multiple Output Formats:**\
+Render to HTML, PDF, MS Word, slides, and more.
+
+## Example Code Chunk
+
+```{python}
+print("Hello, Quarto!")
+```
+
+## Learn More
+
+- [Getting Started with Quarto](https://quarto.org/docs/get-started/)
+- [Quarto User Guide](https://quarto.org/docs/guide/)
+- [Quarto Reference](https://quarto.org/docs/reference/)
+
+---
+
+Happy documenting with Quarto!

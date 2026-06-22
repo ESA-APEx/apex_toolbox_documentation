@@ -1,0 +1,12 @@
+/.quarto/
+/.idea/
+/_site/
+_build
+.venv*
+venv*
+.envrc
+**/libs/*
+**__pycache__
+**/.DS_Store
+**/.ipynb_checkpoints
+.vscode
