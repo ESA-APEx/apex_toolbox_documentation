@@ -53,6 +53,7 @@ jobs:
         with:
           use-quiet-mode: 'yes'
           config-file: 'markdown-link-checker-config.json'
+          file-extension: '.qmd'
 
   deploy-documentation-ghpages:
     runs-on: ubuntu-latest
