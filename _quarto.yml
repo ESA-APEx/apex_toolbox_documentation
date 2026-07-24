@@ -18,11 +18,34 @@ website:
   title: "APEx - Documentation Portal"
 
   sidebar:
-    style: "floating"
-    collapse-level: 2
-    contents:
-      - href: docs/index.qmd
-        text: Welcome
+    - id: "index"
+      tools:
+        - icon: github
+          href: https://github.com/ESA-APEx/apex_toolbox_documentation
+      style: "floating"
+      #collapse-level: 2
+      contents:
+        - href: docs/index.qmd
+          text: Welcome
+        - text: FORCE with openEO on CDSE
+          href: docs/force/index.qmd
+    - id: "force"
+      style: "floating"
+      collapse-level: 2
+      tools:
+        - icon: github
+          menu:
+            - text: APEx toolbox documentation source code
+              href: https://github.com/ESA-APEx/apex_toolbox_documentation
+            - text: FORCE integration source code
+              href: https://github.com/bcdev/apex-force-openeo
+            - text: FORCE toolbox source code
+              href: https://github.com/davidfrantz/force
+      contents:
+        - href: docs/index.qmd
+          text: Welcome
+        - text: FORCE with openEO on CDSE
+          contents: docs/force/**
 
 format:
   html:
