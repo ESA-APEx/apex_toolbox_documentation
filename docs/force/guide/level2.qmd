@@ -1,10 +1,7 @@
 ---
-execute:
-    freeze: true
+title: FORCE level 2
 order: 4
 ---
-
-# FORCE level 2
 
 ## Recap
 
@@ -14,7 +11,6 @@ order: 4
 
 L1C_COLLECTION_URL = "https://stac.dataspace.copernicus.eu/v1/collections/sentinel-2-l1c"
 STAC_ROOT_URL = "https://stac.dataspace.copernicus.eu/v1"
-#w,s,e,n = 10.386, 44.437, 11.423, 44.973
 w, s, e, n = 11.0, 44.5, 11.1, 44.6
 spatial_extent = { "west": w, "south": s, "east": e, "north": n}
 # ATTENTION: Inclusion of the second date in the search depends on the query method.
@@ -70,7 +66,7 @@ The integrated FORCE uses (lowercase) [`snake_case`](https://en.wikipedia.org/wi
 
 The parameters are documented in the process description. We can inspect it using the Python client's [`describe_processes()`](https://open-eo.github.io/openeo-python-client/api.html#openeo.rest.connection.Connection.describe_process).
 
-<!-- 
+<!--
 
     FIXME:
     It is necessary to connect to the staging backend, until the custom processes are publicly
@@ -84,8 +80,9 @@ The parameters are documented in the process description. We can inspect it usin
 connection = openeo.connect("openeo.dataspace.copernicus.eu").authenticate_oidc()
 ```
 
-<!-- TODO
-Temporary until we can use the production environment directly
+<!-- FIXME
+Temporarily we need to use openeo-staging for `describe_process` until the process is discoverable on the production
+environment directly
 -->
 
 ```{python}
@@ -100,10 +97,15 @@ connection.describe_process("force_level2")
 ```
 :::
 
+```{python}
+#| echo: false
+connection = openeo.connect("openeo.dataspace.copernicus.eu").authenticate_oidc()
+```
+
 ### Building the Process Graph
 
 The FORCE process graph is based on the `force_level2` process, as described in [openEO processes](processes.qmd). Because FORCE does not use the standard openEO version of the "data cube" concept, but
-uses its own data cube representation, we need to wrap the process so that we can interact with the results in a convenient way as a StacResource and export the processing results to a workspace.
+uses its own data cube representation, we need to wrap the process so that we can interact with the results in a convenient way as a `StacResource` and export the processing results to a workspace.
 
 
 Concept | Qualified name (Python client) | Purpose
@@ -123,7 +125,7 @@ When running FORCE level2 on its own, we do not need to use a workspace. Simply 
 
 We can instruct openEO to store our results in a workspace using the [`export_workspace`](https://openeo.org/documentation/1.0/processes.html#export_workspace) openEO process.
 
-When using `export_workspace`, we need to pass a `merge` string to identify your result. The merge will be a key prefix on object storage. The `merge` is something similar to a path in a file system. 
+When using `export_workspace`, we need to pass a `merge` string to identify your result. The merge will be a key prefix on object storage. The `merge` is something similar to a path in a file system.
 It is very important to set a good `merge` parameter and remember the result, because results can only be accessed when the `merge` is known. Furthermore, all users of the workspace (in the case of the `apex-force-results-workspace`, anyone) may write data, so make sure to use a unique `merge`, to reduce the likelihood of accidentally modifying others' data and have others overwrite your data by accident.
 
 
@@ -131,7 +133,9 @@ It is very important to set a good `merge` parameter and remember the result, be
 # FORCE workspace
 
 The dedicated workspace for FORCE results is accessible to all users:
-`apex-force-results-workspace` (<https://s3.waw4-1.cloudferro.com/apex-force-results-waw4-1-exotc5yuexi2c5tvwqhoivj62fz8v0uupy0me>)
+
+- id: `apex-force-results-workspace`
+- url: https://s3.waw4-1.cloudferro.com/apex-force-results-waw4-1-exotc5yuexi2c5tvwqhoivj62fz8v0uupy0me
 :::
 
 
@@ -367,7 +371,7 @@ While the cube will stay in place for multiple days, eventually the storage will
 <!--
 
     We use a succeeded job instead of the one created above to avoid having to run and
-    wait for an entire job every time the documentation is re-generated 
+    wait for an entire job every time the documentation is re-generated
     (happens only when the freeze cache is invalidated:
     https://quarto.org/docs/projects/code-execution.html#freeze).
 
@@ -385,8 +389,7 @@ While the cube will stay in place for multiple days, eventually the storage will
 
 ```{python}
 #| echo: false
-#l2_job = connection.job("j-260527114522498d959f20eff3fc9b78")
-l2_job = connection.job("j-260702093443422db1ddead799544cff")
+l2_job = connection.job("j-26081912081541d78d85f046c726a647")
 ```
 
 #### Inspecting STAC metadata {#sec-inspecting-stac}
@@ -395,10 +398,11 @@ l2_job = connection.job("j-260702093443422db1ddead799544cff")
 This step is optional
 :::
 
-The basic URL of the FORCE workspace `apex-force-results-workspace` is 
-<https://s3.waw4-1.cloudferro.com/apex-force-results-waw4-1-exotc5yuexi2c5tvwqhoivj62fz8v0uupy0me>. Together with the `merge` path defined for our processing, we can determine the path to the `catalog.json` for our FORCE level results:
+The basic URL of the FORCE workspace `apex-force-results-workspace` is
+<https://s3.waw4-1.cloudferro.com/apex-force-results-waw4-1-exotc5yuexi2c5tvwqhoivj62fz8v0uupy0me>.
+Together with the `merge` path defined for our processing, we can determine the path to the `catalog.json` for our FORCE level results:
 
-```{.python}
+```{python}
 from pystac.catalog import Catalog
 
 WORKSPACE_URL = "https://s3.waw4-1.cloudferro.com/apex-force-results-waw4-1-exotc5yuexi2c5tvwqhoivj62fz8v0uupy0me"
@@ -410,13 +414,6 @@ l2_catalog.set_self_href(l2_catalog_url)
 l2_catalog
 ```
 
-<!-- FIXME can be removed once there is a result present at the merge -->
-```{python}
-#| echo: false
-WORKSPACE_URL = "https://s3.waw4-1.cloudferro.com/apex-force-results-waw4-1-exotc5yuexi2c5tvwqhoivj62fz8v0uupy0me"
-```
-
-
 #### Downloading files
 
 :::{.callout-tip}
@@ -424,21 +421,15 @@ This step is optional if you plan to continue processing with FORCE on CDSE
 :::
 
 Assets can be downloaded using the standard openEO mechanism to access result assets.
-The STAC metadata specifies the directory structure of the resulting cube. This structure is respected by openEO's [`download_files`](https://open-eo.github.io/openeo-python-client/api.html#openeo.rest.job.JobResults.download_files). 
+The STAC metadata specifies the directory structure of the resulting cube. This structure is respected by openEO's [`download_files`](https://open-eo.github.io/openeo-python-client/api.html#openeo.rest.job.JobResults.download_files).
 
 To inspect a particular asset, we may use [`download_file`](https://open-eo.github.io/openeo-python-client/api.html#openeo.rest.job.JobResults.download_file) to download singular files instead.
 
-```{.python}
+```{python}
 l2_results = l2_job.get_results()
 l2_results
 ```
 
-```{.python}
+```{python}
 l2_results.download_files("force-level2-results")
 ```
-
-<!--
-```{.bash}
-tree force-level2-results
-```
--->
